@@ -1,17 +1,15 @@
-import React, { Component } from "react";
-import ScrollBox from "./ScrollBox";
+import React from 'react';
+import TodoTemplate from './components/TodoTemplate';
+import TodoInsert from './components/TodoInsert';
+import TodoList from './components/TodoList';
 
-class App extends Component {
-  render() {
-    return (
-      <div>
-        <ScrollBox ref={(ref) => (this.scrollBox = ref)} />
-        <button onClick={() => this.scrollBox.scrollToBottom()}>
-          맨 밑으로
-        </button>
-      </div>
-    );
-  }
-}
+const App = () => {
+  return (
+    <TodoTemplate>
+      <TodoInsert />
+      <TodoList />
+    </TodoTemplate>
+  );
+};
 
 export default App;
