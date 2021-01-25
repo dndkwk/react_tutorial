@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import NewsItem from './NewsItem';
+import axios from 'axios';
+import usePromise from '../lib/usePromise';
 
 const NewsListBlock = styled.div`
   box-sizing: border-box;
@@ -14,22 +16,37 @@ const NewsListBlock = styled.div`
     padding-right: 1rem;
   }
 `;
-const sampleArticle = {
+/*const sampleArticle = {
   title: '제목',
   description: '내용',
   url: 'https://google.com',
   urlToImage: 'https://via.placeholder.com/160',
-};
+};*/
 
-const NewsList = () => {
+const NewsList = ({ category }) => {
+  const [loading, response, error] = usePromise(() => {
+    const query = category === 'all' ? '' : `&category=${category}`;
+    return axios.get(
+      `https://newsapi.org/v2/top-headlines?country=kr${query}&apiKey=9fe3f07998f74b429d50e9a34d549e61`,
+    );
+  }, [category]);
+  if (loading) {
+    return <NewsListBlock>대기 중...</NewsListBlock>;
+  }
+
+  if (!response) {
+    return null;
+  }
+
+  if (error) {
+    return <NewsListBlock>에러 발생!</NewsListBlock>;
+  }
+  const { articles } = response.data;
   return (
     <NewsListBlock>
-      <NewsItem article={sampleArticle} />
-      <NewsItem article={sampleArticle} />
-      <NewsItem article={sampleArticle} />
-      <NewsItem article={sampleArticle} />
-      <NewsItem article={sampleArticle} />
-      <NewsItem article={sampleArticle} />
+      {articles.map((article) => (
+        <NewsItem key={articles.url} article={article} />
+      ))}
     </NewsListBlock>
   );
 };
